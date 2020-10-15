@@ -1,0 +1,2 @@
+C:\Users\rober\Documents\School\EECS 280\eecs280\p3-euchre\Debug\p3-euchre.exe
+C:\Users\rober\Documents\School\EECS 280\eecs280\p3-euchre\Debug\p3-euchre.pdb

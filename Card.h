@@ -137,5 +137,4 @@ bool Card_less(const Card &a, const Card &b, const std::string &trump);
 //  and the suit led to determine order, as described in the spec.
 bool Card_less(const Card &a, const Card &b, const Card &led_card,
                const std::string &trump);
-
 #endif
