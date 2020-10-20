@@ -41,22 +41,28 @@ bool isValid(const string &a, const char* const arr[], int size, int start)
 	return false;
 }
 
-string Suit_next(const string &suit)
+bool checkForBowers(const Card a, const Card b, const string trump)
 {
-	assert(isValid(suit, SUIT_NAMES_BY_WEIGHT, NUM_SUITS, 0));
-	if (suit == Card::SUIT_SPADES)
+	assert(a.is_right_bower(trump) || b.is_right_bower(trump) ||
+		a.is_left_bower(trump) || b.is_left_bower(trump));
+
+	if (a.is_right_bower(trump))
 	{
-		return Card::SUIT_CLUBS;
+		return false;
 	}
-	else if (suit == Card::SUIT_HEARTS)
+	else if (b.is_right_bower(trump))
 	{
-		return Card::SUIT_DIAMONDS;
+	return true;
 	}
-	else if (suit == Card::SUIT_CLUBS)
+		else if (a.is_left_bower(trump))
 	{
-		return Card::SUIT_SPADES;
+	return false;
 	}
-	return Card::SUIT_HEARTS;
+	else if (b.is_left_bower(trump))
+	{
+	return true;
+	}
+	return false;
 }
 
 Card::Card()
@@ -220,6 +226,24 @@ bool operator!=(const Card& lhs, const Card& rhs)
 	return (!(lhs == rhs));
 }
 
+string Suit_next(const string& suit)
+{
+	assert(isValid(suit, SUIT_NAMES_BY_WEIGHT, NUM_SUITS, 0));
+	if (suit == Card::SUIT_SPADES)
+	{
+		return Card::SUIT_CLUBS;
+	}
+	else if (suit == Card::SUIT_HEARTS)
+	{
+		return Card::SUIT_DIAMONDS;
+	}
+	else if (suit == Card::SUIT_CLUBS)
+	{
+		return Card::SUIT_SPADES;
+	}
+	return Card::SUIT_HEARTS;
+}
+
 ostream& operator<<(std::ostream& os, const Card& card)
 {
 	os << card.get_rank() << " of " << card.get_suit();
@@ -234,33 +258,22 @@ bool Card_less(const Card& a, const Card& b, const std::string& trump)
 	{
 		return false;
 	}
-	else if (a.is_right_bower(trump))
+	else if (a.is_right_bower(trump) || b.is_right_bower(trump) || 
+		a.is_left_bower(trump) || b.is_left_bower(trump))
 	{
-		return false;
-	}
-	else if (b.is_right_bower(trump))
-	{
-		return true;
-	}
-	else if (a.is_left_bower(trump))
-	{
-		return false;
-	}
-	else if (b.is_left_bower(trump))
-	{
-		return true;
+		return checkForBowers(a, b, trump);
 	}
 	else
 	{
-		if (a.get_suit(trump) == b.get_suit(trump))
+		if (a.get_suit() == b.get_suit())
 		{
 			return a < b;
 		}
-		else if (b.get_suit(trump) == trump)
+		else if (b.get_suit() == trump)
 		{
 			return true;
 		}
-		else if (a.get_suit(trump) == trump)
+		else if (a.get_suit() == trump)
 		{
 			return false;
 		}
@@ -278,6 +291,45 @@ bool Card_less(const Card& a, const Card& b, const Card& led_card,
 	assert(isValid(led_card.get_suit(), SUIT_NAMES_BY_WEIGHT, NUM_SUITS, 0));
 	assert(isValid(led_card.get_rank(), RANK_NAMES_BY_WEIGHT, NUM_RANKS, 0));
 
-	return false;
+	if (a == b)
+	{
+		return false;
+	}
+	else if (trump == led_card.get_suit())
+	{
+		return Card_less(a, b, trump);
+	}
+	else if (a.is_right_bower(trump) || b.is_right_bower(trump) ||
+		a.is_left_bower(trump) || b.is_left_bower(trump))
+	{
+		return checkForBowers(a, b, trump);
+	}
+	else
+	{
+		if (a.get_suit() == b.get_suit())
+		{
+			return a < b;
+		}
+		else if (b.get_suit() == trump)
+		{
+			return true;
+		}
+		else if (a.get_suit() == trump)
+		{
+			return false;
+		}
+		else if(b.get_suit() == led_card.get_suit())
+		{
+			return true;
+		}
+		else if (a.get_suit() == led_card.get_suit())
+		{
+			return false;
+		}
+		else
+		{
+			return a < b;
+		}
+	}
 }
 

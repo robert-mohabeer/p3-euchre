@@ -9,8 +9,11 @@ using namespace std;
 
 TEST(test_card_ctor) {
     Card c(Card::RANK_ACE, Card::SUIT_HEARTS);
+    Card d;
     ASSERT_EQUAL(Card::RANK_ACE, c.get_rank());
     ASSERT_EQUAL(Card::SUIT_HEARTS, c.get_suit());
+    ASSERT_EQUAL(Card::RANK_TWO, d.get_rank());
+    ASSERT_EQUAL(Card::SUIT_SPADES, d.get_suit());
 }
 
 TEST(test_card_face) {
@@ -145,7 +148,7 @@ TEST(next_suit)
     ASSERT_EQUAL(Suit_next(Card::SUIT_CLUBS), Card::SUIT_SPADES);
     ASSERT_NOT_EQUAL(Suit_next(Card::SUIT_HEARTS), Card::SUIT_HEARTS);
     ASSERT_EQUAL(Suit_next(Card::SUIT_SPADES), Card::SUIT_CLUBS);
-    ASSERT_EQUAL(Suit_next(Suit_next(Card::SUIT_CLUBS)), Card::SUIT_CLUBS);// does next twice, so returns original suit
+    ASSERT_EQUAL(Suit_next(Suit_next(Card::SUIT_CLUBS)), Card::SUIT_CLUBS);
 }
 
 TEST(printer)
@@ -179,13 +182,35 @@ TEST(Card_less_test)
     Card f(Card::RANK_JACK, Card::SUIT_HEARTS);
     Card g(Card::RANK_JACK, Card::SUIT_DIAMONDS);
     
-    ASSERT_TRUE(Card_less(e, f, Card::SUIT_DIAMONDS));//Jack of Hearts becomes left bower
-    ASSERT_TRUE(Card_less(g, f, Card::SUIT_HEARTS));//Jack of Hearts becomes right bower, diamonds becomes left
-    ASSERT_TRUE(Card_less(e, g, Card::SUIT_HEARTS));//Jack of Diamonds left bower, stronger than Ace of Clubs
+    ASSERT_TRUE(Card_less(e, f, Card::SUIT_DIAMONDS));
+    ASSERT_TRUE(Card_less(g, f, Card::SUIT_HEARTS));
+    ASSERT_TRUE(Card_less(e, g, Card::SUIT_HEARTS));
 
     Card h(Card::RANK_JACK, Card::SUIT_CLUBS);
     Card i(Card::RANK_JACK, Card::SUIT_CLUBS);
     ASSERT_FALSE(Card_less(h, i, Card::SUIT_CLUBS));
+}
+
+TEST(Card_less_with_led_test)
+{
+    Card led(Card::RANK_KING, Card::SUIT_DIAMONDS);
+
+    Card a(Card::RANK_TEN, Card::SUIT_DIAMONDS);
+    Card b(Card::RANK_ACE, Card::SUIT_HEARTS);
+    ASSERT_TRUE(Card_less(b, a, led, Card::SUIT_CLUBS));
+    ASSERT_TRUE(Card_less(a, b, led, Card::SUIT_HEARTS));
+    ASSERT_FALSE(Card_less(a, a, led, Card::SUIT_HEARTS));
+
+    Card c(Card::RANK_JACK, Card::SUIT_DIAMONDS);
+    Card d(Card::RANK_ACE, Card::SUIT_DIAMONDS);
+    ASSERT_TRUE(Card_less(d, c, led, Card::SUIT_HEARTS));
+
+    Card e(Card::RANK_QUEEN, Card::SUIT_HEARTS);
+    Card f(Card::RANK_QUEEN, Card::SUIT_DIAMONDS);
+    Card g(Card::RANK_KING, Card::SUIT_SPADES);
+    ASSERT_TRUE(Card_less(f, e, led, Card::SUIT_HEARTS));
+    ASSERT_TRUE(Card_less(g, e, led, Card::SUIT_HEARTS));
+    ASSERT_TRUE(Card_less(g, f, led, Card::SUIT_HEARTS));
 }
 
 // Add more test cases here

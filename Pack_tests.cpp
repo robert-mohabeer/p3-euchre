@@ -22,17 +22,17 @@ TEST(reset) {
     Pack pack;
     Card first = pack.deal_one();
     ASSERT_EQUAL(Card::RANK_NINE, first.get_rank());
-    ASSERT_EQUAL(Card::SUIT_SPADES, first.get_suit());//creates the first card in the pack (Nine of Spades)
+    ASSERT_EQUAL(Card::SUIT_SPADES, first.get_suit());
 
-    for (int x = 0; x < 18; x++)//Goes through an arbitrary number of cards (called deal_one() rather than simply next++ to test deal_one() function and avoid effecting private variables)
+    for (int x = 0; x < 18; x++)
     {
         Card more = pack.deal_one();
     }
     Card more = pack.deal_one();
-    ASSERT_EQUAL(Card::RANK_TEN, more.get_rank());//the card created after the loop is the Ten of Diamonds
+    ASSERT_EQUAL(Card::RANK_TEN, more.get_rank());
     ASSERT_EQUAL(Card::SUIT_DIAMONDS, more.get_suit());
 
-    pack.reset();//resets the pack, meaning the next card dealt should be the first (Nine of Spades)
+    pack.reset();
     Card again = pack.deal_one();
     ASSERT_EQUAL(again.get_rank(), first.get_rank());
     ASSERT_EQUAL(again.get_suit(), first.get_suit());
@@ -43,7 +43,7 @@ TEST(both_cstr) {
     ifstream fin("pack.in");
     Pack pack;//creates a pack from default constructor
     Pack pack2(fin);//creates a pack from .in file
-    for (int x = 0; x < 24; x++)//takes the next card from both packs and makes sure they are the same rank and suit
+    for (int x = 0; x < 24; x++)
     {
         Card from_pack = pack.deal_one();
         Card from_pack2 = pack2.deal_one();
@@ -62,7 +62,7 @@ TEST(empty) {
         ASSERT_FALSE(pack.empty())//will check before each deal if the pack is empty
         a = pack.deal_one();
     }
-    ASSERT_EQUAL(a.get_rank(), Card::RANK_ACE);//makes sure the last card is the Ace of Diamonds (last card from default constructor)
+    ASSERT_EQUAL(a.get_rank(), Card::RANK_ACE);
     ASSERT_EQUAL(a.get_suit(), Card::SUIT_DIAMONDS);
     ASSERT_TRUE(pack.empty());//should be empty at the very end
     
